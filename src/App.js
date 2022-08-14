@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useEffect ,useContext} from "react";
+import Appbar from "./Components/Appbar";
+import Header from "./Components/Header";
+import Home from "./Components/Home";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Cart from './Components/CartSection.js/Cart';
+import Login from "./Components/Login";
+import { auth } from "./firebase";
+import { ProductContext } from "./Context/ProductState";
 
-function App() {
+const App = () => {
+  const productData = useContext(ProductContext)
+  useEffect(() => {
+    auth.onAuthStateChanged(authUser=>{
+      authUser?productData.setAuthUser(authUser):productData.setAuthUser(null)
+    })
+  }, [])
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="bg-[#EAEDED]">
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/carts">
+            <Header />
+            <Appbar />
+            <Cart />
+          </Route>
+          <Route path="/">
+            <Header />
+            <Appbar />
+            <Home />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
